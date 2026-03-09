@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Gwiazdy
+    // Silnik Gwiazd 3D
     function initStars() {
         const canvas = document.getElementById('starfield-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -11,16 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.position.z = 5;
 
         const geo = new THREE.BufferGeometry();
-        const pos = new Float32Array(2000 * 3);
-        for(let i=0; i<2000*3; i++) pos[i] = (Math.random()-0.5)*20;
+        const pos = new Float32Array(2500 * 3);
+        for(let i=0; i<2500*3; i++) pos[i] = (Math.random()-0.5)*25;
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const mat = new THREE.PointsMaterial({ size: 0.015, color: 0xffffff, transparent: true, opacity: 0.5 });
+        const mat = new THREE.PointsMaterial({ size: 0.015, color: 0xffffff, transparent: true, opacity: 0.4 });
         const points = new THREE.Points(geo, mat);
         scene.add(points);
 
         function anim() {
             requestAnimationFrame(anim);
-            points.rotation.y += 0.0003;
+            points.rotation.y += 0.0002;
             renderer.render(scene, camera);
         }
         anim();
@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('products-grid');
     const overlay = document.getElementById('overlay');
     const search = document.getElementById('search-input');
+    const drawer = document.getElementById('categories-panel');
     
     let currentCat = 'Wszystkie';
     let query = '';
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${p.name}</h3>
-                    <p class="product-desc">${p.description}</p>
+                    <p class="product-desc" style="display:none">${p.description}</p>
                     <span class="product-price">${p.price.toFixed(2)} zł</span>
                 </div>
             `;
@@ -74,23 +75,30 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeAll() {
         document.querySelectorAll('.product-card.expanded').forEach(c => c.classList.remove('expanded'));
         overlay.classList.remove('active');
+        drawer.classList.remove('open');
         document.body.style.overflow = '';
-        document.getElementById('categories-panel').classList.remove('open');
     }
 
     overlay.onclick = closeAll;
     search.oninput = (e) => { query = e.target.value; render(); };
 
-    document.getElementById('menu-toggle').onclick = () => document.getElementById('categories-panel').classList.add('open');
+    document.getElementById('menu-toggle').onclick = () => drawer.classList.add('open');
     document.getElementById('menu-close').onclick = closeAll;
 
+    // Generowanie Kategorii
     const catList = document.getElementById('categories-list');
     appConfig.categories.forEach(c => {
-        const b = document.createElement('button');
-        b.className = 'category-list-item';
-        b.textContent = c;
-        b.onclick = () => { currentCat = c; render(); closeAll(); };
-        catList.appendChild(b);
+        const btn = document.createElement('button');
+        btn.className = `category-list-item ${c === currentCat ? 'active' : ''}`;
+        btn.textContent = c;
+        btn.onclick = () => {
+            currentCat = c;
+            document.querySelectorAll('.category-list-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render();
+            closeAll();
+        };
+        catList.appendChild(btn);
     });
 
     initStars();
