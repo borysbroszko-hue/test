@@ -1,7 +1,7 @@
 /* script.js */
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. SILNIK GWIAZD 3D + EFEKT ŻYROSKOPU (PARALAKSA) ---
+    // --- 1. SILNIK GWIAZD 3D + EFEKT ŻYROSKOPU ---
     function initStarfield() {
         const canvas = document.getElementById('starfield-canvas');
         if (!canvas) return;
@@ -14,12 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 5;
 
-        // --- GENEROWANIE GWIAZD ---
+        // Generowanie gwiazd
         const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = window.innerWidth < 768 ? 3000 : 6000;
+        const starsCount = window.innerWidth < 768 ? 2500 : 5000;
         const posArray = new Float32Array(starsCount * 3);
         const colorsArray = new Float32Array(starsCount * 3);
-        const sizesArray = new Float32Array(starsCount);
 
         for(let i = 0; i < starsCount; i++) {
             posArray[i * 3] = (Math.random() - 0.5) * 20; 
@@ -29,13 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
             colorsArray[i * 3] = 0.8 + Math.random() * 0.2;
             colorsArray[i * 3 + 1] = 0.8 + Math.random() * 0.2;
             colorsArray[i * 3 + 2] = 0.9 + Math.random() * 0.1;
-
-            sizesArray[i] = Math.random() * 0.04;
         }
 
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         starsGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
-        starsGeometry.setAttribute('size', new THREE.BufferAttribute(sizesArray, 1));
 
         const starsMaterial = new THREE.PointsMaterial({
             size: 0.015,
@@ -48,51 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const starField = new THREE.Points(starsGeometry, starsMaterial);
         scene.add(starField);
 
-        // --- DODATKOWY NEONOWY PYŁ (MGŁAWICA) ---
-        const dustGeometry = new THREE.BufferGeometry();
-        const dustCount = 1000;
-        const dustPos = new Float32Array(dustCount * 3);
-        for(let i = 0; i < dustCount * 3; i++) { 
-            dustPos[i] = (Math.random() - 0.5) * 25; 
-        }
-        dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
-        
-        const dustMaterial = new THREE.PointsMaterial({ 
-            size: 0.006, 
-            color: 0xbc13fe, 
-            transparent: true, 
-            opacity: 0.4 
-        });
-        const dustField = new THREE.Points(dustGeometry, dustMaterial);
-        scene.add(dustField);
-
-        // --- OBSŁUGA RUCHU ---
+        // Obsługa ruchu (Myszka + Żyroskop)
         let mouseX = 0;
         let mouseY = 0;
         let gyroX = 0;
         let gyroY = 0;
         
-        function onPointerMove(event) {
-            let x = event.touches ? event.touches[0].clientX : event.clientX;
-            let y = event.touches ? event.touches[0].clientY : event.clientY;
-            mouseX = (x / window.innerWidth) * 2 - 1;
-            mouseY = - (y / window.innerHeight) * 2 + 1;
-        }
-        window.addEventListener('mousemove', onPointerMove);
-        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = - (e.clientY / window.innerHeight) * 2 + 1;
+        });
 
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', (event) => {
-                gyroX = event.gamma / 45; 
-                gyroY = event.beta / 45;  
+                gyroX = (event.gamma || 0) / 45;
+                gyroY = (event.beta || 0) / 45;
             });
         }
 
         function animate() {
             requestAnimationFrame(animate);
-
-            starField.rotation.y += 0.0002;
-            dustField.rotation.x += 0.0001;
+            starField.rotation.y += 0.0003;
 
             const targetX = (mouseX * 0.4) + (gyroX * 0.6);
             const targetY = (mouseY * 0.2) + (gyroY * 0.3);
@@ -120,36 +92,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
     const brandLogo = document.getElementById('brand-logo');
+    const overlay = document.getElementById('overlay');
 
     let currentCategory = 'Wszystkie';
     let currentSearch = '';
 
-    // Menu Toggle
+    // Obsługa Menu
     function toggleMenu() {
         categoriesPanel.classList.toggle('open');
     }
-    menuToggle.addEventListener('click', toggleMenu);
-    menuClose.addEventListener('click', toggleMenu);
+    menuToggle?.addEventListener('click', toggleMenu);
+    menuClose?.addEventListener('click', toggleMenu);
 
-    // Reset po kliknięciu w Logo
-    if (brandLogo) {
-        brandLogo.addEventListener('click', () => {
-            currentCategory = 'Wszystkie';
-            currentSearch = '';
-            searchInput.value = '';
-            
-            document.querySelectorAll('.category-list-item').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent === 'Wszystkie');
-            });
-            
-            renderProducts();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Zamknięcie powiększonej karty po kliknięciu w tło
+    overlay?.addEventListener('click', () => {
+        const expandedCard = document.querySelector('.product-card.expanded');
+        if (expandedCard) {
+            expandedCard.classList.remove('expanded');
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Przywrócenie scrolla
+        }
+    });
+
+    // Resetowanie widoku po kliknięciu w Logo
+    brandLogo?.addEventListener('click', () => {
+        currentCategory = 'Wszystkie';
+        currentSearch = '';
+        if (searchInput) searchInput.value = '';
+        
+        document.querySelectorAll('.category-list-item').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent === 'Wszystkie');
         });
-    }
+        
+        renderProducts();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     // Inicjalizacja Kategorii
     function initCategories() {
-        if (!categoriesList) return;
+        if (!categoriesList || !appConfig.categories) return;
         categoriesList.innerHTML = ''; 
         
         appConfig.categories.forEach(category => {
@@ -163,10 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 currentCategory = category;
                 renderProducts();
-                toggleMenu(); 
+                toggleMenu();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-            
             categoriesList.appendChild(btn);
         });
     }
@@ -213,9 +193,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // EVENT KLIKNIĘCIA - ROZWIJANIE OPISU
-            card.addEventListener('click', () => {
-                card.classList.toggle('expanded');
+            // Obsługa efektu Pop-out (Powiększenie karty)
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                if (card.classList.contains('expanded')) {
+                    card.classList.remove('expanded');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else {
+                    // Zamknij inne, jeśli były otwarte
+                    document.querySelectorAll('.product-card.expanded').forEach(c => c.classList.remove('expanded'));
+                    
+                    card.classList.add('expanded');
+                    overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Blokada scrolla tła
+                }
             });
 
             productsGrid.appendChild(card);
@@ -230,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- START ---
+    // --- START APLIKACJI ---
     initStarfield();
     initCategories();
     renderProducts();
