@@ -1,8 +1,10 @@
+/* script.js */
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Tło 3D z gwiazdami (czyste i płynne)
+    // Tło 3D z GĘSTSZĄ galaktyką
     function initStars() {
         const canvas = document.getElementById('starfield-canvas');
+        if(!canvas) return;
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -11,19 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.position.z = 5;
 
         const geo = new THREE.BufferGeometry();
-        const pos = new Float32Array(2000 * 3);
-        for(let i=0; i<2000*3; i++) pos[i] = (Math.random()-0.5)*25;
+        // Zwiększono liczbę gwiazd do 8000 dla lepszego efektu 3D i głębi pod blurem
+        const starCount = 8000;
+        const pos = new Float32Array(starCount * 3);
+        for(let i=0; i < starCount * 3; i++) {
+            pos[i] = (Math.random() - 0.5) * 30; // Nieco szerszy rozstaw
+        }
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const mat = new THREE.PointsMaterial({ size: 0.015, color: 0xffffff, transparent: true, opacity: 0.4 });
+        const mat = new THREE.PointsMaterial({ size: 0.012, color: 0xffffff, transparent: true, opacity: 0.5 });
         const points = new THREE.Points(geo, mat);
         scene.add(points);
 
         function anim() {
             requestAnimationFrame(anim);
             points.rotation.y += 0.0002;
+            points.rotation.x += 0.00005; // Lekki dodatkowy obrót dla lepszego 3D
             renderer.render(scene, camera);
         }
         anim();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     }
 
     const grid = document.getElementById('products-grid');
@@ -59,9 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Otwieranie karty (Glassmorphism Modal)
             card.onclick = (e) => {
                 e.stopPropagation();
+                
+                // FIX UX: Jeśli boczne menu jest otwarte, kliknięcie w kartę tylko je zamyka
+                if (drawer.classList.contains('open')) {
+                    closeAll();
+                    return; 
+                }
+
+                // Otwieranie / zamykanie karty
                 if(!card.classList.contains('expanded')) {
                     closeAll();
                     card.classList.add('expanded');
@@ -82,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    overlay.onclick = closeAll;
+    // Kliknięcie w overlay też zamyka wszystko
+    if(overlay) overlay.onclick = closeAll;
     
     if(search) {
         search.addEventListener('input', (e) => {
@@ -92,8 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Obsługa bocznego menu
-    document.getElementById('menu-toggle').onclick = () => drawer.classList.add('open');
-    document.getElementById('menu-close').onclick = closeAll;
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuClose = document.getElementById('menu-close');
+    if(menuToggle) menuToggle.onclick = () => drawer.classList.add('open');
+    if(menuClose) menuClose.onclick = closeAll;
 
     // Generowanie Kategorii
     const catList = document.getElementById('categories-list');
@@ -104,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = c;
             btn.onclick = () => {
                 currentCat = c;
-                // Zmiana aktywnego podświetlenia
                 document.querySelectorAll('.category-list-item').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 renderProducts();
@@ -115,20 +137,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // !!! KLIKNIĘCIE W LOGO - PEŁNY RESET !!!
+    // Reset na logo
     if (logo) {
         logo.onclick = () => {
             currentCat = 'Wszystkie';
             query = '';
             if (search) search.value = '';
             
-            // Zresetuj przyciski kategorii, żeby "Wszystkie" znów było podświetlone
             document.querySelectorAll('.category-list-item').forEach(b => {
-                if (b.textContent === 'Wszystkie') {
-                    b.classList.add('active');
-                } else {
-                    b.classList.remove('active');
-                }
+                if (b.textContent === 'Wszystkie') b.classList.add('active');
+                else b.classList.remove('active');
             });
             
             closeAll();
