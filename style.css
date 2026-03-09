@@ -1,9 +1,13 @@
+/* style.css */
 :root {
     --bg-base: #010103;
     --primary: #bc13fe;
     --glass-heavy: rgba(15, 15, 20, 0.6);
     --glass-expanded: rgba(20, 20, 25, 0.45);
-    --glass-drawer: rgba(10, 10, 15, 0.65);
+    
+    /* ZMIANA: Ciemniejsze tło menu i mocniejsze krycie, aby blur działał na iPhone */
+    --glass-drawer: rgba(8, 8, 12, 0.88); 
+    
     --glass-border: rgba(255, 255, 255, 0.08);
     --line-separator: rgba(255, 255, 255, 0.06);
     --text-main: #ffffff;
@@ -76,14 +80,16 @@ body {
 }
 .menu-btn .bar { width: 22px; height: 2px; background: #fff; border-radius: 2px; }
 
-/* PANEL KATEGORII */
+/* !!! ZMODYFIKOWANY PANEL KATEGORII (DRAWER) !!! */
 .categories-drawer {
     position: fixed; top: 0; right: 0; width: 280px; height: 100vh;
     background: var(--glass-drawer); 
-    backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px);
+    /* ZMIANA: Zwiększony blur z 50px na 60px dla lepszego efektu odcięcia */
+    backdrop-filter: blur(60px); -webkit-backdrop-filter: blur(60px);
     border-left: 1px solid var(--glass-border);
     transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     z-index: 10000; padding: calc(30px + env(safe-area-inset-top)) 20px 20px 20px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5); /* Dodany cień odcinający menu od tła */
 }
 .categories-drawer.open { transform: translateX(0); }
 
@@ -94,6 +100,7 @@ body {
 .drawer-header span { font-weight: 500; font-size: 16px; color: #fff; letter-spacing: 0.5px; }
 #menu-close { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
 
+/* Kafelki z kategoriami wewnątrz menu */
 .category-list-item {
     width: 100%; background: transparent; display: flex; align-items: center;
     border: 1px solid transparent; color: var(--text-muted);
@@ -135,13 +142,13 @@ body {
     padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 500; color: #fff; letter-spacing: 0.5px; z-index: 2;
 }
 
-/* !!! NOWY STYL DLA ETYKIETY BESTSELLER (Okrągła ikonka) !!! */
+/* Okrągła etykieta Bestseller */
 .bestseller-badge {
     position: absolute; top: -5px; right: -5px;
     background: linear-gradient(135deg, #f59e0b, #d97706);
     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    width: 24px; height: 24px; /* Idealne kółko */
+    width: 24px; height: 24px;
     border-radius: 50%;
     font-size: 11px; color: #fff;
     display: flex; align-items: center; justify-content: center; z-index: 3;
@@ -184,7 +191,6 @@ body {
     padding-bottom: 25px;
 }
 
-/* Powiększona ikona w rozszerzonej karcie */
 .product-card.expanded .bestseller-badge {
     width: 32px; height: 32px; font-size: 14px; top: -10px; right: -10px;
 }
