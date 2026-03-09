@@ -1,7 +1,7 @@
 /* script.js */
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. SILNIK GWIAZD 3D (THREE.JS) ---
+    // --- 1. SILNIK GWIAZD 3D + EFEKT ŻYROSKOPU ---
     function initStarfield() {
         const canvas = document.getElementById('starfield-canvas');
         if (!canvas) return;
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuClose?.addEventListener('click', closeAllActive);
     overlay?.addEventListener('click', closeAllActive);
 
-    // Kliknięcie w Logo (Reset)
+    // Resetowanie po kliknięciu w Logo
     brandLogo?.addEventListener('click', () => {
         currentCategory = 'Wszystkie';
         currentSearch = '';
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 currentCategory = category;
                 renderProducts();
-                closeAllActive();
+                closeAllActive(); // Zamknij menu po wyborze
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             categoriesList.appendChild(btn);
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // EVENT KLIKNIĘCIA - EFEKT POP-OUT
+            // !!! EVENT KLIKNIĘCIA - EFEKT POP-OUT !!!
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
                 
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     closeAllActive(); // Zamknij inne jeśli otwarte
                     card.classList.add('expanded');
                     overlay.classList.add('active');
-                    document.body.style.overflow = 'hidden'; // Blokada przewijania tła na iPhone
+                    document.body.style.overflow = 'hidden'; // Blokada przewijania strony głównej na iPhone
                 }
             });
 
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- INICJALIZACJA STARTOWA ---
+    // --- START ---
     initStarfield();
     initCategories();
     renderProducts();
