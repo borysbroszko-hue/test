@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Silnik Gwiazd 3D
+    // Tło 3D z gwiazdami (czyste i płynne)
     function initStars() {
         const canvas = document.getElementById('starfield-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.position.z = 5;
 
         const geo = new THREE.BufferGeometry();
-        const pos = new Float32Array(2500 * 3);
-        for(let i=0; i<2500*3; i++) pos[i] = (Math.random()-0.5)*25;
+        const pos = new Float32Array(2000 * 3);
+        for(let i=0; i<2000*3; i++) pos[i] = (Math.random()-0.5)*25;
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         const mat = new THREE.PointsMaterial({ size: 0.015, color: 0xffffff, transparent: true, opacity: 0.4 });
         const points = new THREE.Points(geo, mat);
@@ -30,15 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('overlay');
     const search = document.getElementById('search-input');
     const drawer = document.getElementById('categories-panel');
+    const logo = document.getElementById('brand-logo');
     
     let currentCat = 'Wszystkie';
     let query = '';
 
-    function render() {
+    function renderProducts() {
         grid.innerHTML = '';
         const filtered = appConfig.products.filter(p => {
             const mC = currentCat === 'Wszystkie' || p.category === currentCat;
-            const mS = p.name.toLowerCase().includes(query.toLowerCase());
+            const mS = p.name.toLowerCase().includes(query.toLowerCase()) || 
+                       p.description.toLowerCase().includes(query.toLowerCase());
             return mC && mS;
         });
 
@@ -52,11 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${p.name}</h3>
-                    <p class="product-desc" style="display:none">${p.description}</p>
+                    <p class="product-desc">${p.description}</p>
                     <span class="product-price">${p.price.toFixed(2)} zł</span>
                 </div>
             `;
 
+            // Otwieranie karty (Glassmorphism Modal)
             card.onclick = (e) => {
                 e.stopPropagation();
                 if(!card.classList.contains('expanded')) {
@@ -80,27 +83,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     overlay.onclick = closeAll;
-    search.oninput = (e) => { query = e.target.value; render(); };
+    
+    if(search) {
+        search.addEventListener('input', (e) => {
+            query = e.target.value;
+            renderProducts();
+        });
+    }
 
+    // Obsługa bocznego menu
     document.getElementById('menu-toggle').onclick = () => drawer.classList.add('open');
     document.getElementById('menu-close').onclick = closeAll;
 
     // Generowanie Kategorii
     const catList = document.getElementById('categories-list');
-    appConfig.categories.forEach(c => {
-        const btn = document.createElement('button');
-        btn.className = `category-list-item ${c === currentCat ? 'active' : ''}`;
-        btn.textContent = c;
-        btn.onclick = () => {
-            currentCat = c;
-            document.querySelectorAll('.category-list-item').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            render();
+    if (catList && appConfig.categories) {
+        appConfig.categories.forEach(c => {
+            const btn = document.createElement('button');
+            btn.className = `category-list-item ${c === currentCat ? 'active' : ''}`;
+            btn.textContent = c;
+            btn.onclick = () => {
+                currentCat = c;
+                // Zmiana aktywnego podświetlenia
+                document.querySelectorAll('.category-list-item').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderProducts();
+                closeAll();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            catList.appendChild(btn);
+        });
+    }
+
+    // !!! KLIKNIĘCIE W LOGO - PEŁNY RESET !!!
+    if (logo) {
+        logo.onclick = () => {
+            currentCat = 'Wszystkie';
+            query = '';
+            if (search) search.value = '';
+            
+            // Zresetuj przyciski kategorii, żeby "Wszystkie" znów było podświetlone
+            document.querySelectorAll('.category-list-item').forEach(b => {
+                if (b.textContent === 'Wszystkie') {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            
             closeAll();
+            renderProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-        catList.appendChild(btn);
-    });
+    }
 
     initStars();
-    render();
+    renderProducts();
 });
