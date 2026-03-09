@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderProducts() {
         grid.innerHTML = '';
         const filtered = appConfig.products.filter(p => {
-            // LOGIKA KATEGORII I BESTSELLERÓW
+            // Logika kategorii i bestsellerów
             let matchCategory = false;
             if (currentCat === 'Wszystkie') {
                 matchCategory = true;
@@ -69,8 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'product-card';
             
-            // GENEROWANIE ETYKIETY BESTSELLERA
-            const bestsellerBadgeHTML = p.bestseller ? `<span class="bestseller-badge"><i class="fa-solid fa-fire"></i> Bestseller</span>` : '';
+            // GENEROWANIE ETYKIETY BESTSELLERA (Tylko Ikonka!)
+            const bestsellerBadgeHTML = p.bestseller ? `<div class="bestseller-badge" title="Bestseller"><i class="fa-solid fa-fire"></i></div>` : '';
 
             card.innerHTML = `
                 <div class="product-image-wrapper">
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = `category-list-item ${c === currentCat ? 'active' : ''}`;
             
-            // Dodatkowa ikonka dla Bestsellerów w samym menu
+            // Dodatkowa ikonka dla Bestsellerów w samym menu (tutaj zostawiamy napis)
             if (c === 'Bestsellery') {
                 btn.innerHTML = `<i class="fa-solid fa-fire" style="color: #f59e0b; margin-right: 8px;"></i>${c}`;
             } else {
