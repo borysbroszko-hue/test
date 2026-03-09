@@ -1,7 +1,7 @@
 /* script.js */
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. SILNIK GWIAZD 3D + EFEKT ŻYROSKOPU ---
+    // --- 1. SILNIK GWIAZD 3D (THREE.JS) ---
     function initStarfield() {
         const canvas = document.getElementById('starfield-canvas');
         if (!canvas) return;
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 5;
 
-        // Generowanie gwiazd
+        // Generowanie geometrii gwiazd
         const starsGeometry = new THREE.BufferGeometry();
         const starsCount = window.innerWidth < 768 ? 2500 : 5000;
         const posArray = new Float32Array(starsCount * 3);
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const starField = new THREE.Points(starsGeometry, starsMaterial);
         scene.add(starField);
 
-        // Obsługa ruchu (Myszka + Żyroskop)
+        // Obsługa interaktywnego ruchu (Myszka / Żyroskop)
         let mouseX = 0;
         let mouseY = 0;
         let gyroX = 0;
@@ -97,24 +97,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = 'Wszystkie';
     let currentSearch = '';
 
-    // Obsługa Menu
-    function toggleMenu() {
-        categoriesPanel.classList.toggle('open');
+    // Funkcja zamykająca wszystkie otwarte elementy (menu i pop-out)
+    function closeAllActive() {
+        document.querySelectorAll('.product-card.expanded').forEach(card => {
+            card.classList.remove('expanded');
+        });
+        overlay.classList.remove('active');
+        categoriesPanel.classList.remove('open');
+        document.body.style.overflow = ''; // Przywrócenie scrollowania tła
     }
-    menuToggle?.addEventListener('click', toggleMenu);
-    menuClose?.addEventListener('click', toggleMenu);
 
-    // Zamknięcie powiększonej karty po kliknięciu w tło
-    overlay?.addEventListener('click', () => {
-        const expandedCard = document.querySelector('.product-card.expanded');
-        if (expandedCard) {
-            expandedCard.classList.remove('expanded');
-            overlay.classList.remove('active');
-            document.body.style.overflow = ''; // Przywrócenie scrolla
-        }
-    });
+    // Obsługa Menu i Overlay
+    menuToggle?.addEventListener('click', () => categoriesPanel.classList.add('open'));
+    menuClose?.addEventListener('click', closeAllActive);
+    overlay?.addEventListener('click', closeAllActive);
 
-    // Resetowanie widoku po kliknięciu w Logo
+    // Kliknięcie w Logo (Reset)
     brandLogo?.addEventListener('click', () => {
         currentCategory = 'Wszystkie';
         currentSearch = '';
@@ -144,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 currentCategory = category;
                 renderProducts();
-                toggleMenu();
+                closeAllActive();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             categoriesList.appendChild(btn);
@@ -193,21 +191,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Obsługa efektu Pop-out (Powiększenie karty)
+            // EVENT KLIKNIĘCIA - EFEKT POP-OUT
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
                 
                 if (card.classList.contains('expanded')) {
-                    card.classList.remove('expanded');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = '';
+                    closeAllActive();
                 } else {
-                    // Zamknij inne, jeśli były otwarte
-                    document.querySelectorAll('.product-card.expanded').forEach(c => c.classList.remove('expanded'));
-                    
+                    closeAllActive(); // Zamknij inne jeśli otwarte
                     card.classList.add('expanded');
                     overlay.classList.add('active');
-                    document.body.style.overflow = 'hidden'; // Blokada scrolla tła
+                    document.body.style.overflow = 'hidden'; // Blokada przewijania tła na iPhone
                 }
             });
 
@@ -215,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Listener wyszukiwarki
+    // Obsługa wyszukiwarki
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             currentSearch = e.target.value;
@@ -223,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- START APLIKACJI ---
+    // --- INICJALIZACJA STARTOWA ---
     initStarfield();
     initCategories();
     renderProducts();
