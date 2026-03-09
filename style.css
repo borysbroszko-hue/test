@@ -1,341 +1,141 @@
-/* style.css */
 :root {
-    --bg-base: #010103; /* Ciemny granat kosmosu */
-    --primary: #bc13fe; /* Neonowy fiolet LiquidCloud */
+    --bg-base: #010103;
+    --primary: #bc13fe;
     --primary-glow: rgba(188, 19, 254, 0.4);
     --text-main: #ffffff;
     --text-muted: #94949e;
     --glass-heavy: rgba(10, 10, 15, 0.85);
     --glass-panel: rgba(15, 15, 20, 0.98);
-    
-    /* Efekty rozmycia */
     --blur-main: 25px;
     --blur-card: 15px;
-    
-    /* Stała wysokość kompaktowego nagłówka */
     --header-height: 65px;
 }
 
-/* GLOBALNE RESETOWANIE I BLOKADY IPHONE (App-like feel) */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0; padding: 0; box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    -webkit-tap-highlight-color: transparent; /* Usuwa brzydki niebieski kwadrat przy klikaniu na iOS */
-
-    /* TOTALNA BLOKADA INTERAKCJI SYSTEMOWYCH */
-    -webkit-user-select: none;    /* Blokada zaznaczania tekstu Safari */
-    user-select: none;            /* Blokada zaznaczania tekstu Standard */
-    -webkit-touch-callout: none;  /* Blokada menu "Zapisz obrazek" na iPhone przy przytrzymaniu */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
-/* Przywrócenie możliwości interakcji z wyszukiwarką */
-#search-input {
-    -webkit-user-select: text;
-    user-select: text;
-}
+#search-input { -webkit-user-select: text; user-select: text; }
 
 body {
     background-color: var(--bg-base);
     color: var(--text-main);
     overflow-x: hidden;
-    /* Bezpieczne marginesy dla nowoczesnych smartfonów (notch, Home Bar) */
     padding-top: env(safe-area-inset-top);
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
-/* TŁO GWIAZD 3D (Zawsze pod spodem) */
 #starfield-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1; 
-    display: block;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1; display: block;
 }
 
-/* OVERLAY (PRZYCIEMNIENIE TŁA) */
+/* OVERLAY - Musi być pod kartą, ale nad resztą */
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Głębsze przyciemnienie */
-    backdrop-filter: blur(10px); /* Lepsze rozmycie tła */
-    -webkit-backdrop-filter: blur(10px);
-    z-index: 500;
-    display: none; /* Domyślnie ukryte */
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 5000;
+    display: none; opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.overlay.active {
-    display: block;
-    opacity: 1;
-}
+.overlay.active { display: block; opacity: 1; }
 
-/* GŁÓWNY KONTENER TREŚCI */
-.app-wrapper {
-    position: relative;
-    z-index: 1; /* Nad gwiazdami */
-    width: 100%;
-}
-
-/* NAGŁÓWEK (STICKY HEADER) */
 .header {
-    position: sticky;
-    top: 0;
-    height: var(--header-height);
+    position: sticky; top: 0; height: var(--header-height);
     background: var(--glass-heavy);
     backdrop-filter: blur(var(--blur-main));
     -webkit-backdrop-filter: blur(var(--blur-main));
     z-index: 100;
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
+    display: flex; align-items: center; padding: 0 15px;
 }
 
-.header-compact-row {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.brand-logo {
-    height: 34px;
-    width: auto;
-    object-fit: contain;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.brand-logo:active {
-    transform: scale(0.9);
-}
-
-.search-bar-compact {
-    position: relative;
-    flex-grow: 1;
-    max-width: 250px;
-}
-
-.search-icon-slim {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #52525b;
-    font-size: 13px;
-    z-index: 2;
-}
-
+.header-compact-row { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; }
+.brand-logo { height: 34px; cursor: pointer; transition: transform 0.3s; }
+.search-bar-compact { position: relative; flex-grow: 1; max-width: 250px; }
 #search-input {
-    width: 100%;
-    height: 38px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 0 10px 0 35px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
+    width: 100%; height: 38px; background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+    padding: 0 10px 0 35px; color: #fff; font-size: 14px; outline: none;
 }
+.icon-btn-menu { background: transparent; border: none; color: #fff; font-size: 20px; }
 
-.icon-btn-menu {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-/* PANEL KATEGORII (FULLSCREEN) */
-.categories-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: var(--glass-panel);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    padding: calc(20px + env(safe-area-inset-top)) 20px 20px 20px;
-    transform: translateX(100%); 
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.categories-panel.open {
-    transform: translateX(0);
-}
-
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.category-list-item {
-    width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    color: #fff;
-    padding: 16px;
-    border-radius: 14px;
-    margin-bottom: 10px;
-    text-align: left;
-    font-weight: 500;
-}
-
-.category-list-item.active {
-    background: linear-gradient(90deg, var(--primary), #d8b4fe);
-    border-color: var(--primary);
-    box-shadow: 0 5px 15px var(--primary-glow);
-}
-
-/* GRID PRODUKTÓW (2 KOLUMNY NA TELEFONIE) */
 .products-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 15px;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 12px; padding: 15px;
 }
 
-/* KARTA PRODUKTU (Normalna) */
+/* KARTA PRODUKTU */
 .product-card {
     background: var(--glass-heavy);
-    border-radius: 22px;
-    padding: 10px;
+    border-radius: 22px; padding: 12px;
     border: 1px solid rgba(255,255,255,0.05);
     backdrop-filter: blur(var(--blur-card));
     -webkit-backdrop-filter: blur(var(--blur-card));
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1), background 0.3s ease;
-    opacity: 0;
-    animation: entrance 0.5s forwards;
-    cursor: pointer;
+    display: flex; flex-direction: column;
+    opacity: 0; animation: entrance 0.5s forwards;
 }
 
-/* !!! EFEKT ROZWINIĘCIA (POP-OUT) - OPTYMALIZACJA POD TELEFON !!! */
+/* !!! POPRAWIONA KARTA NA ŚRODKU !!! */
 .product-card.expanded {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1);
-    width: 92vw;
-    max-width: 380px;
-    max-height: 85vh; /* Zabezpieczenie przed wyjściem poza ekran góra/dół */
-    z-index: 1000;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    width: 90vw !important;
+    max-width: 360px !important;
+    max-height: 80vh;
+    z-index: 10000 !important; /* Nad blur */
     background: var(--glass-panel);
     border: 1px solid var(--primary);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 30px var(--primary-glow);
-    overflow-y: auto; /* Pozwala przewijać opis, jeśli jest długi */
-    padding: 20px;
-    display: block; /* Zmiana z flex na block dla poprawnego scrollowania */
+    box-shadow: 0 0 50px rgba(0,0,0,1), 0 0 30px var(--primary-glow);
+    overflow-y: auto;
+    padding: 25px;
 }
 
-/* Stylizacja zdjęcia w trybie rozwiniętym */
-.product-card.expanded .product-image-wrapper {
-    width: 80%;
-    margin: 0 auto 20px auto;
-    aspect-ratio: 1/1;
-}
-
-/* !!! NAPRAWA TŁA ZA ZDJĘCIEM - TERAZ JEST PRZEZROCZYSTE !!! */
+/* USUNIĘCIE TŁA ZDJĘCIA */
 .product-image-wrapper {
-    width: 100%;
-    aspect-ratio: 1/1;
-    border-radius: 18px;
-    overflow: hidden;
-    position: relative;
-    
-    /* USUŃ CZARNE TŁO STĄD */
-    background: transparent; 
+    width: 100%; aspect-ratio: 1/1; border-radius: 15px;
+    overflow: hidden; position: relative;
+    background: transparent !important; /* Tu usuwamy tło */
 }
 
-.product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none; /* Dodatkowa ochrona przed menu kontekstowym iOS */
-}
+.product-image { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+.product-card.expanded .product-image-wrapper { width: 70%; margin: 0 auto 15px; }
+.product-card.expanded .product-name { font-size: 20px; text-align: center; }
+.product-card.expanded .product-desc { display: block; text-align: center; font-size: 14px; margin: 15px 0; }
+.product-card.expanded .product-price { font-size: 24px; text-align: center; margin-top: 20px; }
 
 .product-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: rgba(0,0,0,0.6);
-    padding: 4px 8px;
-    border-radius: 10px;
-    font-size: 9px;
-    font-weight: 700;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.1);
+    position: absolute; top: 5px; left: 5px;
+    background: rgba(0,0,0,0.7); font-size: 8px; font-weight: 700;
+    padding: 4px 8px; border-radius: 8px; color: #fff;
 }
 
-.product-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-top: 10px;
-    line-height: 1.2;
-}
-
-.product-card.expanded .product-name {
-    font-size: 20px;
-    text-align: center;
-}
-
-/* Opis - domyślnie chowany */
+.product-name { font-size: 13px; font-weight: 600; margin-top: 10px; }
 .product-desc {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 6px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Pokaż tylko 2 linie w siatce */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 10px; color: var(--text-muted); margin-top: 5px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
+.product-price { font-size: 15px; font-weight: 700; color: var(--primary); margin-top: auto; }
 
-/* Pokazanie opisu w trybie expanded */
-.product-card.expanded .product-desc {
-    display: block; /* Usuń limit linii */
-    font-size: 14px;
-    color: #fff;
-    text-align: center;
-    line-height: 1.6;
-    margin: 15px 0;
+.categories-panel {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: var(--glass-panel); z-index: 2000;
+    transform: translateX(100%); transition: 0.4s;
 }
+.categories-panel.open { transform: translateX(0); }
 
-.product-price {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-top: auto;
-    display: block;
-}
-
-.product-card.expanded .product-price {
-    font-size: 24px;
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* ANIMACJE */
 @keyframes entrance {
-    from { opacity: 0; transform: translateY(15px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
