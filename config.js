@@ -1,13 +1,13 @@
 // config.js
 const appConfig = {
     brandName: "LiquidCloud",
-    categories: ["Wszystkie", "ELFLIQ", "VOZOL_SALT", "HQD_SALT", "VOZOL_SALT_PRIME"],
+    categories: ["Wszystkie", "ELFLIQ", "VOZOL SALT", "HQD SALT", "VOZOL SALT PRIME"],
     
     products: [
         {
             id: 1,
             name: "Vozol | Berry Peach",
-            category: "VOZOL_SALT",
+            category: "VOZOL SALT",
             price: 29.99,
             image: "assets/vozol.png",
             description: "Soczysta fuzja dojrzałych jagód leśnych i słodkiej brzoskwini. Idealny balans między słodyczą a owocowym orzeźwieniem."
@@ -23,7 +23,7 @@ const appConfig = {
         {
             id: 3,
             name: "HQD | Lemon Lime",
-            category: "HQD_SALT",
+            category: "HQD SALT",
             price: 29.99,
             image: "assets/hqd.png",
             description: "Cytrusowa eksplozja energii. Połączenie kwaśnej cytryny i aromatycznej limonki, które gwarantuje maksymalne orzeźwienie."
@@ -31,7 +31,7 @@ const appConfig = {
         {
             id: 4,
             name: "Vozol | Strawberry Ice",
-            category: "VOZOL_SALT",
+            category: "VOZOL SALT",
             price: 29.99,
             image: "assets/vozol.png",
             description: "Klasyczna, słodka truskawka przełamana arktycznym chłodem. Wyrazisty smak, który zostaje na długo."
@@ -47,7 +47,7 @@ const appConfig = {
         {
             id: 6,
             name: "HQD | Watermelon",
-            category: "HQD_SALT",
+            category: "HQD SALT",
             price: 29.99,
             image: "assets/hqd.png",
             description: "Soczysty, dojrzały arbuz w wydaniu salt. Niesamowicie gładki i naturalnie słodki aromat lata."
@@ -55,7 +55,7 @@ const appConfig = {
         {
             id: 7,
             name: "Vozol | Mango Apple",
-            category: "VOZOL_SALT",
+            category: "VOZOL SALT",
             price: 29.99,
             image: "assets/vozol.png",
             description: "Egzotyczny miks kremowego mango i chrupkiego, zielonego jabłka. Tropikalna przygoda przy każdym zaciągnięciu."
@@ -71,10 +71,11 @@ const appConfig = {
         {
             id: 9,
             name: "HQD | Mint",
-            category: "HQD_SALT",
+            category: "HQD SALT",
             price: 29.99,
             image: "assets/hqd.png",
             description: "Czysta, lodowata mięta. Klasyczny wybór dla fanów mocnego uderzenia chłodu i totalnego odświeżenia."
         },
     ]
 };
+
