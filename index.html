@@ -2,32 +2,53 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Katalog Liquidów</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LiquidCloud Premium</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="header">
-        <div class="header-top">
-            <h1 id="brand-title">Katalog</h1>
-            <div class="icon-btn"><i class="fa-solid fa-fire-flame-curved"></i></div>
-        </div>
+    <canvas id="starfield-canvas"></canvas>
+
+    <div class="app-wrapper">
         
-        <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="search-input" placeholder="Szukaj liquidu...">
-        </div>
+        <header class="header">
+            <div class="header-compact-row">
+                
+                <img src="assets/logo.png" id="brand-logo" class="brand-logo" alt="Logo LiquidCloud">
+                
+                <div class="search-bar-compact">
+                    <i class="fa-solid fa-magnifying-glass search-icon-slim"></i>
+                    <input type="text" id="search-input" placeholder="Szukaj liquidu...">
+                </div>
 
-        <div class="categories-container" id="categories-container">
+                <button id="menu-toggle" class="icon-btn-menu" aria-label="Otwórz menu kategorii">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
             </div>
-    </header>
 
-    <main class="products-grid" id="products-grid">
-        </main>
+            <div class="categories-panel" id="categories-panel">
+                <div class="panel-header">
+                    <h2>Wybierz kategorię</h2>
+                    <button id="menu-close" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="categories-list" id="categories-list">
+                    </div>
+            </div>
+        </header>
 
+        <main class="products-grid" id="products-grid">
+            </main>
+        
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
