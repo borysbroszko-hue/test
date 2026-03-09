@@ -1,7 +1,7 @@
 /* script.js */
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Tło 3D z GĘSTSZĄ galaktyką
+    // Tło 3D z gęstą galaktyką
     function initStars() {
         const canvas = document.getElementById('starfield-canvas');
         if(!canvas) return;
@@ -13,11 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.position.z = 5;
 
         const geo = new THREE.BufferGeometry();
-        // Zwiększono liczbę gwiazd do 8000 dla lepszego efektu 3D i głębi pod blurem
         const starCount = 8000;
         const pos = new Float32Array(starCount * 3);
         for(let i=0; i < starCount * 3; i++) {
-            pos[i] = (Math.random() - 0.5) * 30; // Nieco szerszy rozstaw
+            pos[i] = (Math.random() - 0.5) * 30;
         }
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         const mat = new THREE.PointsMaterial({ size: 0.012, color: 0xffffff, transparent: true, opacity: 0.5 });
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function anim() {
             requestAnimationFrame(anim);
             points.rotation.y += 0.0002;
-            points.rotation.x += 0.00005; // Lekki dodatkowy obrót dla lepszego 3D
+            points.rotation.x += 0.00005;
             renderer.render(scene, camera);
         }
         anim();
@@ -51,18 +50,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderProducts() {
         grid.innerHTML = '';
         const filtered = appConfig.products.filter(p => {
-            const mC = currentCat === 'Wszystkie' || p.category === currentCat;
-            const mS = p.name.toLowerCase().includes(query.toLowerCase()) || 
-                       p.description.toLowerCase().includes(query.toLowerCase());
-            return mC && mS;
+            // LOGIKA KATEGORII I BESTSELLERÓW
+            let matchCategory = false;
+            if (currentCat === 'Wszystkie') {
+                matchCategory = true;
+            } else if (currentCat === 'Bestsellery') {
+                matchCategory = p.bestseller === true;
+            } else {
+                matchCategory = p.category === currentCat;
+            }
+
+            const matchSearch = p.name.toLowerCase().includes(query.toLowerCase()) || 
+                                p.description.toLowerCase().includes(query.toLowerCase());
+            return matchCategory && matchSearch;
         });
 
         filtered.forEach(p => {
             const card = document.createElement('div');
             card.className = 'product-card';
+            
+            // GENEROWANIE ETYKIETY BESTSELLERA
+            const bestsellerBadgeHTML = p.bestseller ? `<span class="bestseller-badge"><i class="fa-solid fa-fire"></i> Bestseller</span>` : '';
+
             card.innerHTML = `
                 <div class="product-image-wrapper">
                     <span class="product-badge">${p.category}</span>
+                    ${bestsellerBadgeHTML}
                     <img src="${p.image}" class="product-image">
                 </div>
                 <div class="product-info">
@@ -75,13 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
             card.onclick = (e) => {
                 e.stopPropagation();
                 
-                // FIX UX: Jeśli boczne menu jest otwarte, kliknięcie w kartę tylko je zamyka
+                // Blokada otwierania karty, jeśli menu boczne jest otwarte
                 if (drawer.classList.contains('open')) {
                     closeAll();
                     return; 
                 }
 
-                // Otwieranie / zamykanie karty
                 if(!card.classList.contains('expanded')) {
                     closeAll();
                     card.classList.add('expanded');
@@ -102,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    // Kliknięcie w overlay też zamyka wszystko
     if(overlay) overlay.onclick = closeAll;
     
     if(search) {
@@ -112,19 +123,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Obsługa bocznego menu
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
     if(menuToggle) menuToggle.onclick = () => drawer.classList.add('open');
     if(menuClose) menuClose.onclick = closeAll;
 
-    // Generowanie Kategorii
     const catList = document.getElementById('categories-list');
     if (catList && appConfig.categories) {
         appConfig.categories.forEach(c => {
             const btn = document.createElement('button');
             btn.className = `category-list-item ${c === currentCat ? 'active' : ''}`;
-            btn.textContent = c;
+            
+            // Dodatkowa ikonka dla Bestsellerów w samym menu
+            if (c === 'Bestsellery') {
+                btn.innerHTML = `<i class="fa-solid fa-fire" style="color: #f59e0b; margin-right: 8px;"></i>${c}`;
+            } else {
+                btn.textContent = c;
+            }
+
             btn.onclick = () => {
                 currentCat = c;
                 document.querySelectorAll('.category-list-item').forEach(b => b.classList.remove('active'));
@@ -137,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Reset na logo
     if (logo) {
         logo.onclick = () => {
             currentCat = 'Wszystkie';
