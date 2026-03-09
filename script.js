@@ -22,17 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const sizesArray = new Float32Array(starsCount);
 
         for(let i = 0; i < starsCount; i++) {
-            // Pozycje
             posArray[i * 3] = (Math.random() - 0.5) * 20; 
             posArray[i * 3 + 1] = (Math.random() - 0.5) * 20;
             posArray[i * 3 + 2] = (Math.random() - 0.5) * 20;
             
-            // Kolory (odcienie białego i błękitu)
             colorsArray[i * 3] = 0.8 + Math.random() * 0.2;
             colorsArray[i * 3 + 1] = 0.8 + Math.random() * 0.2;
             colorsArray[i * 3 + 2] = 0.9 + Math.random() * 0.1;
 
-            // Rozmiary
             sizesArray[i] = Math.random() * 0.04;
         }
 
@@ -75,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let gyroX = 0;
         let gyroY = 0;
         
-        // Myszka i Dotyk
         function onPointerMove(event) {
             let x = event.touches ? event.touches[0].clientX : event.clientX;
             let y = event.touches ? event.touches[0].clientY : event.clientY;
@@ -85,26 +81,22 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('mousemove', onPointerMove);
         window.addEventListener('touchmove', onPointerMove);
 
-        // Żyroskop (Paralaksa dla telefonu)
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', (event) => {
-                gyroX = event.gamma / 45; // Przechył lewo-prawo
-                gyroY = event.beta / 45;  // Przechył góra-dół
+                gyroX = event.gamma / 45; 
+                gyroY = event.beta / 45;  
             });
         }
 
         function animate() {
             requestAnimationFrame(animate);
 
-            // Stały, powolny ruch tła
             starField.rotation.y += 0.0002;
             dustField.rotation.x += 0.0001;
 
-            // Interpolacja ruchu (łączenie myszki i żyroskopu)
             const targetX = (mouseX * 0.4) + (gyroX * 0.6);
             const targetY = (mouseY * 0.2) + (gyroY * 0.3);
 
-            // Płynne podążanie kamery
             camera.position.x += (targetX - camera.position.x) * 0.05;
             camera.position.y += (-targetY - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
@@ -113,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         animate();
 
-        // Responsywność
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -147,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSearch = '';
             searchInput.value = '';
             
-            // Resetuj przyciski w menu
             document.querySelectorAll('.category-list-item').forEach(btn => {
                 btn.classList.toggle('active', btn.textContent === 'Wszystkie');
             });
@@ -173,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 currentCategory = category;
                 renderProducts();
-                toggleMenu(); // Zamknij menu po wyborze
+                toggleMenu(); 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             
@@ -222,6 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+
+            // EVENT KLIKNIĘCIA - ROZWIJANIE OPISU
+            card.addEventListener('click', () => {
+                card.classList.toggle('expanded');
+            });
+
             productsGrid.appendChild(card);
         });
     }
