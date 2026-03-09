@@ -3,9 +3,9 @@
     --primary: #bc13fe;
     --glass-heavy: rgba(15, 15, 20, 0.6);
     --glass-expanded: rgba(20, 20, 25, 0.45);
-    --glass-drawer: rgba(10, 10, 15, 0.65); /* Nieco ciemniejsze dla lepszego kontrastu z gwiazdami */
+    --glass-drawer: rgba(10, 10, 15, 0.65);
     --glass-border: rgba(255, 255, 255, 0.08);
-    --line-separator: rgba(255, 255, 255, 0.06); /* Kolor delikatnych linii w kartach */
+    --line-separator: rgba(255, 255, 255, 0.06);
     --text-main: #ffffff;
     --text-muted: #a0a0ab;
     --header-h: 70px;
@@ -76,11 +76,11 @@ body {
 }
 .menu-btn .bar { width: 22px; height: 2px; background: #fff; border-radius: 2px; }
 
-/* PANEL KATEGORII Z MOCNIEJSZYM BLUREM */
+/* PANEL KATEGORII */
 .categories-drawer {
     position: fixed; top: 0; right: 0; width: 280px; height: 100vh;
     background: var(--glass-drawer); 
-    backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); /* Zwiększony Blur */
+    backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px);
     border-left: 1px solid var(--glass-border);
     transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     z-index: 10000; padding: calc(30px + env(safe-area-inset-top)) 20px 20px 20px;
@@ -95,11 +95,11 @@ body {
 #menu-close { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
 
 .category-list-item {
-    width: 100%; background: transparent;
+    width: 100%; background: transparent; display: flex; align-items: center;
     border: 1px solid transparent; color: var(--text-muted);
     padding: 14px 18px; border-radius: 12px; margin-bottom: 8px;
     text-align: left; font-size: 14px; font-weight: 400;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; cursor: pointer;
 }
 .category-list-item.active {
     background: rgba(255, 255, 255, 0.08); 
@@ -118,10 +118,9 @@ body {
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     transition: transform 0.3s ease; cursor: pointer;
-    display: flex; flex-direction: column;
+    display: flex; flex-direction: column; position: relative;
 }
 
-/* Dodana linia oddzielająca pod obrazkiem */
 .product-image-wrapper { 
     width: 100%; aspect-ratio: 1; margin-bottom: 12px; position: relative; 
     border-bottom: 1px solid var(--line-separator);
@@ -133,12 +132,20 @@ body {
     position: absolute; top: -5px; left: -5px;
     background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
     border: 1px solid var(--glass-border);
-    padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 500; color: #fff; letter-spacing: 0.5px;
+    padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 500; color: #fff; letter-spacing: 0.5px; z-index: 2;
 }
 
-/* Układ tekstu wewnątrz karty */
-.product-info { display: flex; flex-direction: column; flex-grow: 1; }
+/* !!! STYL DLA ETYKIETY BESTSELLER !!! */
+.bestseller-badge {
+    position: absolute; top: -5px; right: -5px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; color: #fff; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 5px; z-index: 3;
+}
 
+.product-info { display: flex; flex-direction: column; flex-grow: 1; }
 .product-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
 .product-desc { 
     font-size: 11px; color: var(--text-muted); font-weight: 300;
@@ -146,14 +153,13 @@ body {
     margin-bottom: 10px;
 }
 
-/* Dodana linia oddzielająca nad ceną */
 .product-price { 
     color: var(--text-main); font-weight: 600; font-size: 15px; 
     margin-top: auto; padding-top: 10px;
     border-top: 1px solid var(--line-separator);
 }
 
-/* WYSUNIĘTA KARTA (EXPANDED) Z LINIAMI */
+/* WYSUNIĘTA KARTA (EXPANDED) */
 .product-card.expanded {
     position: fixed !important; top: 50% !important; left: 50% !important;
     transform: translate(-50%, -50%) !important;
@@ -170,11 +176,15 @@ body {
     display: block; overflow-y: auto;
 }
 
-/* Grubsze linie w powiększonej karcie */
 .product-card.expanded .product-image-wrapper { 
     width: 75%; margin: 0 auto 25px auto; 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 25px;
+}
+
+/* Dostosowanie Bestsellera w otwartej karcie */
+.product-card.expanded .bestseller-badge {
+    font-size: 11px; padding: 6px 12px;
 }
 
 .product-card.expanded .product-name { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 15px; }
