@@ -1,10 +1,11 @@
 :root {
-    --bg-base: #020205; /* Bardzo ciemne tło pod gwiazdy */
-    --primary: #bc13fe; /* Akcent kolorystyczny (tylko do tekstów i detali) */
-    --glass-heavy: rgba(15, 15, 20, 0.6); /* Przezroczyste karty standardowe */
-    --glass-expanded: rgba(20, 20, 25, 0.45); /* Bardziej przezroczyste karty po kliknięciu */
-    --glass-drawer: rgba(10, 10, 15, 0.5); /* Przezroczyste tło menu */
-    --glass-border: rgba(255, 255, 255, 0.08); /* Delikatna ramka szkła */
+    --bg-base: #010103;
+    --primary: #bc13fe;
+    --glass-heavy: rgba(15, 15, 20, 0.6);
+    --glass-expanded: rgba(20, 20, 25, 0.45);
+    --glass-drawer: rgba(10, 10, 15, 0.65); /* Nieco ciemniejsze dla lepszego kontrastu z gwiazdami */
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --line-separator: rgba(255, 255, 255, 0.06); /* Kolor delikatnych linii w kartach */
     --text-main: #ffffff;
     --text-muted: #a0a0ab;
     --header-h: 70px;
@@ -30,18 +31,15 @@ body {
 
 #starfield-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
-/* Tło przyciemniające pod wysuniętą kartą */
 .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.6); 
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     z-index: 5000; display: none; opacity: 0; 
     transition: opacity 0.4s ease;
 }
 .overlay.active { display: block; opacity: 1; }
 
-/* Clean Header */
 .header {
     position: sticky; top: 0; height: var(--header-h);
     background: rgba(5, 5, 10, 0.6);
@@ -78,11 +76,11 @@ body {
 }
 .menu-btn .bar { width: 22px; height: 2px; background: #fff; border-radius: 2px; }
 
-/* Estetyczne Menu Kategorii (Drawer) */
+/* PANEL KATEGORII Z MOCNIEJSZYM BLUREM */
 .categories-drawer {
     position: fixed; top: 0; right: 0; width: 280px; height: 100vh;
     background: var(--glass-drawer); 
-    backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+    backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); /* Zwiększony Blur */
     border-left: 1px solid var(--glass-border);
     transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     z-index: 10000; padding: calc(30px + env(safe-area-inset-top)) 20px 20px 20px;
@@ -109,13 +107,12 @@ body {
     color: #fff; font-weight: 500;
 }
 
-/* Grid Produktów */
+/* KARTY PRODUKTÓW W SIATCE */
 .products-grid {
     display: grid; grid-template-columns: repeat(2, 1fr);
     gap: 15px; padding: 20px;
 }
 
-/* Zwykła karta produktu w siatce */
 .product-card {
     background: var(--glass-heavy); border-radius: 22px; padding: 15px;
     border: 1px solid var(--glass-border);
@@ -124,31 +121,45 @@ body {
     display: flex; flex-direction: column;
 }
 
-.product-image-wrapper { width: 100%; aspect-ratio: 1; margin-bottom: 12px; position: relative; }
+/* Dodana linia oddzielająca pod obrazkiem */
+.product-image-wrapper { 
+    width: 100%; aspect-ratio: 1; margin-bottom: 12px; position: relative; 
+    border-bottom: 1px solid var(--line-separator);
+    padding-bottom: 12px;
+}
 .product-image { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
 .product-badge {
-    position: absolute; top: 0; left: 0;
+    position: absolute; top: -5px; left: -5px;
     background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
     border: 1px solid var(--glass-border);
     padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 500; color: #fff; letter-spacing: 0.5px;
 }
 
+/* Układ tekstu wewnątrz karty */
+.product-info { display: flex; flex-direction: column; flex-grow: 1; }
+
 .product-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
 .product-desc { 
     font-size: 11px; color: var(--text-muted); font-weight: 300;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 10px;
 }
-.product-price { color: var(--text-main); font-weight: 600; font-size: 15px; margin-top: auto; padding-top: 10px; }
 
-/* !!! EXPANDED CARD - CZYSTY, SZKLANY EFEKT !!! */
+/* Dodana linia oddzielająca nad ceną */
+.product-price { 
+    color: var(--text-main); font-weight: 600; font-size: 15px; 
+    margin-top: auto; padding-top: 10px;
+    border-top: 1px solid var(--line-separator);
+}
+
+/* WYSUNIĘTA KARTA (EXPANDED) Z LINIAMI */
 .product-card.expanded {
     position: fixed !important; top: 50% !important; left: 50% !important;
     transform: translate(-50%, -50%) !important;
     width: 88vw !important; max-width: 360px; max-height: 85vh;
     z-index: 10000 !important; 
     
-    /* Gładkie szkło zamiast czarnego tła i neonów */
     background: var(--glass-expanded) !important;
     backdrop-filter: blur(35px) !important; 
     -webkit-backdrop-filter: blur(35px) !important;
@@ -159,13 +170,21 @@ body {
     display: block; overflow-y: auto;
 }
 
-.product-card.expanded .product-image-wrapper { width: 75%; margin: 0 auto 25px auto; }
+/* Grubsze linie w powiększonej karcie */
+.product-card.expanded .product-image-wrapper { 
+    width: 75%; margin: 0 auto 25px auto; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 25px;
+}
+
 .product-card.expanded .product-name { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 15px; }
+
 .product-card.expanded .product-desc { 
     display: block !important; text-align: center; font-size: 13px; font-weight: 300;
     color: rgba(255, 255, 255, 0.8); line-height: 1.6; margin-bottom: 25px;
 }
+
 .product-card.expanded .product-price { 
     font-size: 22px; text-align: center; font-weight: 600; 
-    color: #fff; border-top: 1px solid var(--glass-border); padding-top: 20px;
+    color: #fff; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px;
 }
