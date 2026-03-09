@@ -135,14 +135,16 @@ body {
     padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 500; color: #fff; letter-spacing: 0.5px; z-index: 2;
 }
 
-/* !!! STYL DLA ETYKIETY BESTSELLER !!! */
+/* !!! NOWY STYL DLA ETYKIETY BESTSELLER (Okrągła ikonka) !!! */
 .bestseller-badge {
     position: absolute; top: -5px; right: -5px;
     background: linear-gradient(135deg, #f59e0b, #d97706);
     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; color: #fff; letter-spacing: 0.5px;
-    display: flex; align-items: center; gap: 5px; z-index: 3;
+    width: 24px; height: 24px; /* Idealne kółko */
+    border-radius: 50%;
+    font-size: 11px; color: #fff;
+    display: flex; align-items: center; justify-content: center; z-index: 3;
 }
 
 .product-info { display: flex; flex-direction: column; flex-grow: 1; }
@@ -182,9 +184,9 @@ body {
     padding-bottom: 25px;
 }
 
-/* Dostosowanie Bestsellera w otwartej karcie */
+/* Powiększona ikona w rozszerzonej karcie */
 .product-card.expanded .bestseller-badge {
-    font-size: 11px; padding: 6px 12px;
+    width: 32px; height: 32px; font-size: 14px; top: -10px; right: -10px;
 }
 
 .product-card.expanded .product-name { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 15px; }
